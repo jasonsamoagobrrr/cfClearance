@@ -2,13 +2,11 @@ package cfClearance
 
 import (
 	"context"
-	"crypto/tls"
 	"errors"
+	"gitlab.com/gitlab-com/gl-security/security-operations/gl-redteam/cfClearance/client"
 	"log"
 	"net/http"
-	"net/http/cookiejar"
 	"net/url"
-	"os"
 	"strings"
 	"time"
 
@@ -23,7 +21,7 @@ import (
 //(cf_clearance) if the site is protected.
 func MakeCfClient(target string, agent string) (http.Client, error) {
 	// Start with a fresh http.Client
-	client := makeClient()
+	client := client.Create()
 
 	// Validate the target URL
 	if validateURL(target) == false {
@@ -88,26 +86,7 @@ func MakeCfClient(target string, agent string) (http.Client, error) {
 	return client, nil
 }
 
-func makeClient() http.Client {
-	// If a proxy is defined, skip TLS verification.
-	// We do this as it seems likely you are testing via ZAP/Burp/etc
-	var tr http.Transport
-	if os.Getenv("HTTP_PROXY") != "" || os.Getenv("HTTPS_PROXY") != "" {
-		tr.TLSClientConfig = &tls.Config{InsecureSkipVerify: true}
-		tr.Proxy = http.ProxyFromEnvironment
-	}
 
-	// Initialize an empy cookie jar. It will be populated later with Cloudflare cookie
-	cookieJar, _ := cookiejar.New(nil)
-
-	client := &http.Client{
-		Transport: &tr,
-	}
-	client.Jar = cookieJar
-
-	return *client
-
-}
 
 func validateURL(target string) bool {
 	u, err := url.Parse(target)
@@ -121,7 +100,7 @@ func validateURL(target string) bool {
 
 func checkForCloudflare(target string) bool {
 	// Check for a typical Cloudflare response
-	client := makeClient()
+	client := client2.Create()
 	resp, err := client.Get(target)
 	if err != nil {
 		log.Fatal("Could not GET target when performing Cloudflare checks")
