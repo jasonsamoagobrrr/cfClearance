@@ -3,10 +3,12 @@ package chrome
 import (
 	"context"
 	"errors"
+	"github.com/chromedp/cdproto/network"
 	"github.com/chromedp/chromedp"
 	"gitlab.com/gitlab-com/gl-security/security-operations/gl-redteam/cfClearance/cfclient"
 	"log"
 	"net/http"
+	"strings"
 	"time"
 )
 
@@ -39,7 +41,7 @@ func GetCloudFlareClearanceCookie(client *http.Client, agent string, target stri
 	err := chromedp.Run(ctx,
 		chromedp.Navigate(target),
 		chromedp.WaitNotPresent(`Checking your browser`, chromedp.BySearch),
-		cfclient.ExtractCookie(cookieReceiverChan),
+		extractCookie(cookieReceiverChan),
 	)
 	if err != nil {
 		if err == context.DeadlineExceeded {
@@ -58,4 +60,21 @@ func GetCloudFlareClearanceCookie(client *http.Client, agent string, target stri
 	client.Jar.SetCookies(cookieURL, cookies)
 
 	return client, nil
+}
+
+
+func extractCookie(c chan string) chromedp.Action {
+	return chromedp.ActionFunc(func(ctx context.Context) error {
+		cookies, err := network.GetAllCookies().Do(ctx)
+		if err != nil {
+			return err
+		}
+		for _, cookie := range cookies {
+			if strings.ToLower(cookie.Name) == "cf_clearance" {
+				// if we find a proper cookie, put the value on the receiving channel
+				c <- cookie.Value
+			}
+		}
+		return nil
+	})
 }
