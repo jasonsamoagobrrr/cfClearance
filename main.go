@@ -7,10 +7,8 @@ import (
 	"gitlab.com/gitlab-com/gl-security/security-operations/gl-redteam/cfClearance/validate"
 	"log"
 	"net/http"
-	"strings"
 	"time"
 
-	"github.com/chromedp/cdproto/network"
 	"github.com/chromedp/chromedp"
 )
 
@@ -65,7 +63,7 @@ func MakeCfClient(target string, agent string) (*http.Client, error) {
 	err := chromedp.Run(ctx,
 		chromedp.Navigate(target),
 		chromedp.WaitNotPresent(`Checking your browser`, chromedp.BySearch),
-		extractCookie(cookieReceiverChan),
+		cfclient.ExtractCookie(cookieReceiverChan),
 	)
 	if err != nil {
 		if err == context.DeadlineExceeded {
@@ -86,18 +84,3 @@ func MakeCfClient(target string, agent string) (*http.Client, error) {
 	return client, nil
 }
 
-func extractCookie(c chan string) chromedp.Action {
-	return chromedp.ActionFunc(func(ctx context.Context) error {
-		cookies, err := network.GetAllCookies().Do(ctx)
-		if err != nil {
-			return err
-		}
-		for _, cookie := range cookies {
-			if strings.ToLower(cookie.Name) == "cf_clearance" {
-				// if we find a proper cookie, put the value on the receiving channel
-				c <- cookie.Value
-			}
-		}
-		return nil
-	})
-}
