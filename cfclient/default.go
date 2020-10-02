@@ -1,9 +1,10 @@
-package client
+package cfclient
 
 import (
 	"crypto/tls"
 	"net/http"
 	"net/http/cookiejar"
+	"net/url"
 	"os"
 )
 
@@ -26,4 +27,20 @@ func Create() *http.Client {
 
 	return client
 
+}
+
+func BakeCookies(target string, cfToken string) (*url.URL, []*http.Cookie) {
+	u, _ := url.Parse(target)
+	d := "." + u.Host
+	var cookies []*http.Cookie
+	cfCookie := &http.Cookie{
+		Name:   "cf_clearance",
+		Value:  cfToken,
+		Path:   "/",
+		Domain: d,
+	}
+	cookies = append(cookies, cfCookie)
+	cookieURL, _ := url.Parse(target)
+
+	return cookieURL, cookies
 }

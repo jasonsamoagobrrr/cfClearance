@@ -3,11 +3,10 @@ package cfClearance
 import (
 	"context"
 	"errors"
-	"gitlab.com/gitlab-com/gl-security/security-operations/gl-redteam/cfClearance/client"
+	"gitlab.com/gitlab-com/gl-security/security-operations/gl-redteam/cfClearance/cfclient"
 	"gitlab.com/gitlab-com/gl-security/security-operations/gl-redteam/cfClearance/validate"
 	"log"
 	"net/http"
-	"net/url"
 	"strings"
 	"time"
 
@@ -21,8 +20,8 @@ import (
 // It will return an http.Client that has the required Cloudflare cookie
 //(cf_clearance) if the site is protected.
 func MakeCfClient(target string, agent string) (*http.Client, error) {
-	// Start with a fresh http.Client
-	client := client.Create()
+	// Start with a fresh http.Client pointer we'll later return
+	client := cfclient.Create()
 
 	// Validate the target URL
 	if validate.Url(target) == false {
@@ -81,7 +80,7 @@ func MakeCfClient(target string, agent string) (*http.Client, error) {
 	log.Printf("[*] Grabbed Cloudflare token: %s", cfToken)
 
 	// Finally, build up the cookie jar with the required token
-	cookieURL, cookies := craftCookies(target, cfToken)
+	cookieURL, cookies := cfclient.BakeCookies(target, cfToken)
 	client.Jar.SetCookies(cookieURL, cookies)
 
 	return client, nil
@@ -101,20 +100,4 @@ func extractCookie(c chan string) chromedp.Action {
 		}
 		return nil
 	})
-}
-
-func craftCookies(target string, cfToken string) (*url.URL, []*http.Cookie) {
-	u, _ := url.Parse(target)
-	d := "." + u.Host
-	var cookies []*http.Cookie
-	cfCookie := &http.Cookie{
-		Name:   "cf_clearance",
-		Value:  cfToken,
-		Path:   "/",
-		Domain: d,
-	}
-	cookies = append(cookies, cfCookie)
-	cookieURL, _ := url.Parse(target)
-
-	return cookieURL, cookies
 }
