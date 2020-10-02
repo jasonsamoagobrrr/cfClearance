@@ -4,6 +4,7 @@ import (
 	"context"
 	"errors"
 	"gitlab.com/gitlab-com/gl-security/security-operations/gl-redteam/cfClearance/client"
+	"gitlab.com/gitlab-com/gl-security/security-operations/gl-redteam/cfClearance/validate"
 	"log"
 	"net/http"
 	"net/url"
@@ -24,7 +25,7 @@ func MakeCfClient(target string, agent string) (*http.Client, error) {
 	client := client.Create()
 
 	// Validate the target URL
-	if validateURL(target) == false {
+	if validate.Url(target) == false {
 		return client, errors.New("Could not parse the target URL")
 	}
 
@@ -84,16 +85,6 @@ func MakeCfClient(target string, agent string) (*http.Client, error) {
 	client.Jar.SetCookies(cookieURL, cookies)
 
 	return client, nil
-}
-
-func validateURL(target string) bool {
-	u, err := url.Parse(target)
-
-	if err != nil || u.Scheme == "" || u.Host == "" {
-		return false
-	}
-
-	return true
 }
 
 func checkForCloudflare(target string, client *http.Client) bool {
