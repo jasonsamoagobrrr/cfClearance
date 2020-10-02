@@ -19,7 +19,7 @@ import (
 // you use in your tooling for subsequent requests, per Cloudflare.
 // It will return an http.Client that has the required Cloudflare cookie
 //(cf_clearance) if the site is protected.
-func MakeCfClient(target string, agent string) (http.Client, error) {
+func MakeCfClient(target string, agent string) (*http.Client, error) {
 	// Start with a fresh http.Client
 	client := client.Create()
 
@@ -30,7 +30,7 @@ func MakeCfClient(target string, agent string) (http.Client, error) {
 
 	// Check if target is even protected by Cloudflare. If not, just return the
 	// client as-is.
-	if checkForCloudflare(target) == false {
+	if checkForCloudflare(target, client) == false {
 		log.Println("[*] Target not protected by Cloudflare.")
 		return client, nil
 	}
@@ -86,8 +86,6 @@ func MakeCfClient(target string, agent string) (http.Client, error) {
 	return client, nil
 }
 
-
-
 func validateURL(target string) bool {
 	u, err := url.Parse(target)
 
@@ -98,9 +96,8 @@ func validateURL(target string) bool {
 	return true
 }
 
-func checkForCloudflare(target string) bool {
+func checkForCloudflare(target string, client *http.Client) bool {
 	// Check for a typical Cloudflare response
-	client := client2.Create()
 	resp, err := client.Get(target)
 	if err != nil {
 		log.Fatal("Could not GET target when performing Cloudflare checks")

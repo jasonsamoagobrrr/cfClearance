@@ -7,7 +7,7 @@ import (
 	"os"
 )
 
-func Create() http.Client {
+func Create() *http.Client {
 	// If a proxy is defined, skip TLS verification.
 	// We do this as it seems likely you are testing via ZAP/Burp/etc
 	var tr http.Transport
@@ -16,7 +16,7 @@ func Create() http.Client {
 		tr.Proxy = http.ProxyFromEnvironment
 	}
 
-	// Initialize an empy cookie jar. It will be populated later with Cloudflare cookie
+	// Initialize an empty cookie jar. It will be populated later with Cloudflare cookie
 	cookieJar, _ := cookiejar.New(nil)
 
 	client := &http.Client{
@@ -24,6 +24,6 @@ func Create() http.Client {
 	}
 	client.Jar = cookieJar
 
-	return *client
+	return client
 
 }
