@@ -12,7 +12,7 @@ import (
 	"time"
 )
 
-func GetCloudFlareClearanceCookie(client *http.Client, agent string, target string) (*http.Client, error) {
+func GetCloudFlareClearanceCookie(client *http.Client, agent string, target string) error {
 	opts := append(chromedp.DefaultExecAllocatorOptions[:],
 		// Ignore certificate errors (for use with proxy testing)
 		chromedp.Flag("ignore-certificate-errors", "1"),
@@ -45,9 +45,9 @@ func GetCloudFlareClearanceCookie(client *http.Client, agent string, target stri
 	)
 	if err != nil {
 		if err == context.DeadlineExceeded {
-			return client, errors.New("Context deadline exceeded trying to grab cookie using chromedp")
+			return errors.New("Context deadline exceeded trying to grab cookie using chromedp")
 		}
-		return client, err
+		return err
 	}
 
 	// block the program until the cloud flare cookie is received, or .WaitVisible times out looking for login-pane
@@ -59,7 +59,7 @@ func GetCloudFlareClearanceCookie(client *http.Client, agent string, target stri
 	cookieURL, cookies := cfclient.BakeCookies(target, cfToken)
 	client.Jar.SetCookies(cookieURL, cookies)
 
-	return client, nil
+	return nil
 }
 
 func extractCookie(c chan string) chromedp.Action {

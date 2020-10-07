@@ -8,7 +8,7 @@ import (
 	"os"
 )
 
-func Create() *http.Client {
+func Initialize(client *http.Client) {
 	// If a proxy is defined, skip TLS verification.
 	// We do this as it seems likely you are testing via ZAP/Burp/etc
 	var tr http.Transport
@@ -20,13 +20,8 @@ func Create() *http.Client {
 	// Initialize an empty cookie jar. It will be populated later with Cloudflare cookie
 	cookieJar, _ := cookiejar.New(nil)
 
-	client := &http.Client{
-		Transport: &tr,
-	}
+	client.Transport = &tr
 	client.Jar = cookieJar
-
-	return client
-
 }
 
 func BakeCookies(target string, cfToken string) (*url.URL, []*http.Cookie) {

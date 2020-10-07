@@ -9,25 +9,25 @@ import (
 	"net/http"
 )
 
-// MakeCfClient should be called directly, using a URL string as the target
+// ConfigureCfClient should be called directly, using a URL string as the target
 // and a second string for the User-Agent to pass. User-Agent must match what
 // you use in your tooling for subsequent requests, per Cloudflare.
-// It will return an http.Client that has the required Cloudflare cookie
-//(cf_clearance) if the site is protected.
-func MakeCfClient(target string, agent string) (*http.Client, error) {
-	// Start with a fresh http.Client pointer we'll later return
-	client := cfclient.Create()
+// Pass in your own http.Client that will receive CloudFlares'
+// (cf_clearance) if the site is protected.
+func ConfigureClient(client *http.Client, target string, agent string) error {
+	// Initialize the client with the things we need to bypass cloudflare
+	cfclient.Initialize(client)
 
 	// Validate the target URL
 	if validate.Url(target) == false {
-		return client, errors.New("Could not parse the target URL")
+		return errors.New("could not parse the target URL")
 	}
 
 	// Check if target is even protected by Cloudflare. If not, just return the
 	// client as-is.
 	if validate.CloudFlareIsPresent(target, client) == false {
 		log.Println("[*] Target not protected by Cloudflare.")
-		return client, nil
+		return nil
 	}
 
 	log.Println("[!] Target is protected by Cloudflare, bypassing...")
