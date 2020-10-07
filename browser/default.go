@@ -62,7 +62,6 @@ func GetCloudFlareClearanceCookie(client *http.Client, agent string, target stri
 	return client, nil
 }
 
-
 func extractCookie(c chan string) chromedp.Action {
 	return chromedp.ActionFunc(func(ctx context.Context) error {
 		cookies, err := network.GetAllCookies().Do(ctx)

@@ -44,4 +44,3 @@ func BakeCookies(target string, cfToken string) (*url.URL, []*http.Cookie) {
 
 	return cookieURL, cookies
 }
-

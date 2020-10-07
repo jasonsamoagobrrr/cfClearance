@@ -2,8 +2,8 @@ package cfClearance
 
 import (
 	"errors"
-	"gitlab.com/gitlab-com/gl-security/security-operations/gl-redteam/cfClearance/cfclient"
 	"gitlab.com/gitlab-com/gl-security/security-operations/gl-redteam/cfClearance/browser"
+	"gitlab.com/gitlab-com/gl-security/security-operations/gl-redteam/cfClearance/cfclient"
 	"gitlab.com/gitlab-com/gl-security/security-operations/gl-redteam/cfClearance/validate"
 	"log"
 	"net/http"
@@ -35,4 +35,3 @@ func MakeCfClient(target string, agent string) (*http.Client, error) {
 	return browser.GetCloudFlareClearanceCookie(client, agent, target)
 
 }
-
