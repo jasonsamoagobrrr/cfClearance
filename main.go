@@ -3,7 +3,7 @@ package cfClearance
 import (
 	"errors"
 	"gitlab.com/gitlab-com/gl-security/security-operations/gl-redteam/cfClearance/cfclient"
-	"gitlab.com/gitlab-com/gl-security/security-operations/gl-redteam/cfClearance/chrome"
+	"gitlab.com/gitlab-com/gl-security/security-operations/gl-redteam/cfClearance/browser"
 	"gitlab.com/gitlab-com/gl-security/security-operations/gl-redteam/cfClearance/validate"
 	"log"
 	"net/http"
@@ -32,7 +32,7 @@ func MakeCfClient(target string, agent string) (*http.Client, error) {
 
 	log.Println("[!] Target is protected by Cloudflare, bypassing...")
 
-	return chrome.GetCloudFlareClearanceCookie(client, agent, target)
+	return browser.GetCloudFlareClearanceCookie(client, agent, target)
 
 }
 
