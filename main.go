@@ -25,7 +25,7 @@ func MakeCfClient(target string, agent string) (*http.Client, error) {
 
 	// Check if target is even protected by Cloudflare. If not, just return the
 	// client as-is.
-	if validate.CloudflareExists(target, client) == false {
+	if validate.CloudFlareIsPresent(target, client) == false {
 		log.Println("[*] Target not protected by Cloudflare.")
 		return client, nil
 	}

@@ -17,7 +17,7 @@ func Url(target string) bool {
 	return true
 }
 
-func CloudflareExists(target string, client *http.Client) bool {
+func CloudFlareIsPresent(target string, client *http.Client) bool {
 	// Check for a typical Cloudflare response
 	resp, err := client.Get(target)
 	if err != nil {
