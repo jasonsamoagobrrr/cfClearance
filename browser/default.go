@@ -5,7 +5,7 @@ import (
 	"errors"
 	"github.com/chromedp/cdproto/network"
 	"github.com/chromedp/chromedp"
-	"gitlab.com/gitlab-com/gl-security/security-operations/gl-redteam/cfClearance/cfclient"
+	"gitlab-com/gl-security/threatmanagement/redteam/redteam-public/cfClearance/cfclient"
 	"log"
 	"net/http"
 	"strings"

@@ -2,9 +2,9 @@ package cfClearance
 
 import (
 	"errors"
-	"gitlab.com/gitlab-com/gl-security/security-operations/gl-redteam/cfClearance/browser"
-	"gitlab.com/gitlab-com/gl-security/security-operations/gl-redteam/cfClearance/cfclient"
-	"gitlab.com/gitlab-com/gl-security/security-operations/gl-redteam/cfClearance/validate"
+	"gitlab-com/gl-security/threatmanagement/redteam/redteam-public/cfClearance/browser"
+	"gitlab-com/gl-security/threatmanagement/redteam/redteam-public/cfClearance/cfclient"
+	"gitlab-com/gl-security/threatmanagement/redteam/redteam-public/cfClearance/validate"
 	"log"
 	"net/http"
 )
