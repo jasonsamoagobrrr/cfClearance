@@ -1,4 +1,4 @@
-module gitlab.com/gitlab-com/gl-security/threatmanagement/redteam/redteam-public/cfClearance
+module github.com/imayberoot/cfClearance
 
 go 1.14
 
