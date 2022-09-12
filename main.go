@@ -4,7 +4,7 @@ import (
 	"errors"
 	"github.com/imayberoot/cfClearance/browser"
 	"github.com/imayberoot/cfClearance/cfclient"
-	"github.com/imayberoot/cfClearance/cfClearancevalidate"
+	"github.com/imayberoot/cfClearance/validate"
 	"log"
 	"net/http"
 )
