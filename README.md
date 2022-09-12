@@ -9,7 +9,7 @@ You can import this package into your Golang applications so that you can use st
 Let's say you need to scrape the text of `https://example.com`, but your requests fail with a `503` because of the Cloudflare protection mechanism. You can use this package like this:
 
 ```
-import gitlab.com/gitlab-com/gl-security/security-operations/gl-redteam/cfClearance
+import github.com/imayberoot/cfClearance
 
 // Full URL to where you encounter the Cloudflare warning
 target := "https://example.com"
