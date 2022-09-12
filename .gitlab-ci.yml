@@ -1,9 +1,0 @@
-image: "golang:1.14.1-buster"
-
-stages:
-  - build
-
-build:
-  stage: build
-  script:
-    - go build
