@@ -24,8 +24,8 @@ func CloudFlareIsPresent(target string, client *http.Client) bool {
 		log.Fatal("Could not GET target when performing Cloudflare checks")
 	}
 	
-	//yoinked resp.StatusCode == 503 && from this func for testing
-	if strings.Contains(resp.Header.Get("Server"), "cloudflare") {
+	
+	if resp.StatusCode == 503 && strings.Contains(resp.Header.Get("Server"), "cloudflare") {
 		return true
 	}
 
